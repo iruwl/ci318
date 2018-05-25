@@ -31,6 +31,10 @@ class MY_Controller extends CI_Controller
         );
         $this->load->library('twig', $config);
 
+        // global variable
+        $this->twig->addGlobal('ci_controller', $this->router->fetch_class());
+        $this->twig->addGlobal('ci_method', $this->router->fetch_method());
+
         // minify
         $this->_minify($path, $view, $this->twig->getTwig());
 
@@ -44,8 +48,9 @@ class MY_Controller extends CI_Controller
         $this->load->library('minify');
         $this->minify->js('global.js');
         $this->minify->css('global.css');
-        $twig->addGlobal('global_css', $this->minify->deploy_css());
-        $twig->addGlobal('global_js', $this->minify->deploy_js());
+        // add to global variable
+        $twig->addGlobal('ci_global_css', $this->minify->deploy_css());
+        $twig->addGlobal('ci_global_js', $this->minify->deploy_js());
 
         // minify view css/js
         $path     = $path ?: VIEWPATH;
@@ -61,13 +66,15 @@ class MY_Controller extends CI_Controller
         $css_file = "$css_path/$view.css";
         if (file_exists($css_file) && filesize($css_file)) {
             $minify->css("$view.css");
-            $twig->addGlobal('view_css', $minify->deploy_css());
+            // add to global variable
+            $twig->addGlobal('ci_view_css', $minify->deploy_css());
         }
 
         $js_file = "$js_path/$view.js";
         if (file_exists($js_file) && filesize($js_file)) {
             $minify->js("$view.js");
-            $twig->addGlobal('view_js', $minify->deploy_js());
+            // add to global variable
+            $twig->addGlobal('ci_view_js', $minify->deploy_js());
         }
     }
 }
